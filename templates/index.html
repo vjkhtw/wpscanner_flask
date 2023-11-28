@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WordPress Scraper</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+<body>
+    <div class = "container">
+        <h1>WordPress Scraper</h1>
+        <form method="post">
+            <label for="url">Enter URL:</label>
+            <input type="text" id="url" name="url">
+            <button type="submit">Get Info</button>
+        </form>
+        {% if error %}
+            <p>Failed to retrieve information. Please enter a valid URL.</p>
+        {% endif %}
+        {% if result %}
+            <h2>Results for URL: {{ request.form['url'] }}</h2>
+            <p>WordPress Version: {{ result['WordPress Version'] }}</p>
+            <p>Theme Name: {{ result['Theme Name'] }}</p>
+            <p>Plugins:</p>
+            <ul>
+                {% for plugin, info in plugin_info.items() %}
+                    {% if info %}
+                        <li>{{ plugin }}</li>
+                        <p>Name: {{ info.name }}</p>
+                        <p>Version: {{ info.version }}</p>
+                        <p>Description: {{ info.description }}</p>
+                        <p>Author: {{ info.author.split('">')[-1].split('</a>')[0] }}</p>
+                        <p><a href="{{ info.homepage }}">View More</a></p>
+                    {% else %}
+                        <li>{{ plugin }}</li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+            {% if theme_info %}
+                <h3>Theme Information</h3>
+                <p>Name: {{ theme_info.name }}</p>
+                <p>Version: {{ theme_info.version }}</p>
+                <p>Description: {{ theme_info.description }}</p>
+                <p>Author: {{ theme_info.author }}</p>
+                <p><a href="{{ theme_info.homepage }}">View More</a></p>
+            {% endif %}
+        {% endif %}
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+</html>
